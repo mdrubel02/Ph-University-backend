@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import httpStatus from 'http-status';
 import sendResponse from '../../utils/sendResponse';
 import { StudentServices } from './student.service';
@@ -8,8 +10,7 @@ import catchAsync from '../../utils/catchAsync';
 const getSingleStudent = catchAsync(async (
   req,
   res,
-  next,
-) => {
+  next,) => {
   
     const { studentId } = req.params;
     const result = await StudentServices.getSingleStudentFromDB(studentId);

@@ -8,6 +8,7 @@ import { User } from "./user.model";
 import { generateStudentId } from "./user.utils";
 import httpStatus from "http-status";
 import { TAcademicSemseter } from "../academicSemester/academicSemester.interface";
+import AppError from "../../errors/AppError";
 
 
 const createStudentIntoDB = async (password: string, payload: TStudent) => {
@@ -25,9 +26,9 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
     payload.admissionSemester,
   );
 
-  // if (!admissionSemester) {
-  //   throw new AppError(400, 'Admission semester not found');
-  // }
+  if (!admissionSemester) {
+    throw new AppError(400, 'Admission semester not found');
+  }
   
   const session = await mongoose.startSession();
 

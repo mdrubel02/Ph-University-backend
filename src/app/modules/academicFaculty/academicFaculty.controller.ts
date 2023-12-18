@@ -4,7 +4,7 @@ import sendResponse from "../../utils/sendResponse";
 import { academicFacultyServices } from "./academicFaculty.service";
 
 
-const createAcademicFaculty = catchAsync(async (req,res)=>{
+const createAcademicFaculties = catchAsync(async (req,res)=>{
 
     const result = await academicFacultyServices.createAcademicFacultyIntoDB(req.body)
 
@@ -16,6 +16,17 @@ const createAcademicFaculty = catchAsync(async (req,res)=>{
     })
 })
 
+const getAcademicFaculties = catchAsync(async (req,res)=>{
+    const result =await academicFacultyServices.getAllAcademicFaculty()
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Successfully retrive faculty',
+        data: result
+    })
+})
+
 export const academicFacultyController = {
-    createAcademicFaculty
+    createAcademicFaculties,
+    getAcademicFaculties
 }

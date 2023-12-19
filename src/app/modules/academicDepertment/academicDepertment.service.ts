@@ -26,9 +26,18 @@ const updatedAcademicDepertment = async (
   id: string,
   payload: TAcademicDepertment,
 ) => {
-  const result = await AcademicDepertment.findOneAndUpdate({_id: id}, payload, {
-    new: true,
-  });
+  console.log(id, 'form service')
+  // const isDepertmentExsist = await AcademicDepertment.findOne({name : payload.name})
+  // if(isDepertmentExsist){
+  //   throw new Error('this department already exist')
+  // }
+  const result = await AcademicDepertment.findOneAndUpdate(
+    { _id: id },
+    payload,
+    {
+      new: true,
+    },
+  );
   return result;
 };
 

@@ -33,14 +33,20 @@ const getSingleAcademicDepertment = catchAsync(async (req,res)=>{
     })
 })
 
-// const updatedAcademicDepertment = catchAsync( async (req,res)=>{
-//     const id = req.params.departmentId
-//     const result = await 
-// })
+const updatedAcademicDepertment = catchAsync( async (req,res)=>{
+    const id = req.params.depertmentId;
+    const result = await AcademicDepertmentServices.updatedAcademicDepertment(id, req.body)
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Successfully updated Academic depertment',
+        data: result
+    })
+})
 
 export const AcademicDepertmentController = {
     createAcademicDepertment,
     getAllAcademicDepertment,
     getSingleAcademicDepertment,
-    // updatedAcademicDepertment
+    updatedAcademicDepertment
 }

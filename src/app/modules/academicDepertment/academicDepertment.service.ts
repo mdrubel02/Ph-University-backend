@@ -13,12 +13,12 @@ const createAcademicDepertmentIntoDB = async (payload: TAcademicDepertment) => {
 };
 
 const getAcademicDepertment = async () => {
-  const result = await AcademicDepertment.find();
+  const result = await AcademicDepertment.find().populate('academicFaculty');
   return result;
 };
 
 const getSingleAcademicDepertment = async (id: string) => {
-  const result = await AcademicDepertment.findById(id);
+  const result = await AcademicDepertment.findById(id).populate('academicFaculty');
   return result;
 };
 
@@ -26,11 +26,6 @@ const updatedAcademicDepertment = async (
   id: string,
   payload: TAcademicDepertment,
 ) => {
-  console.log(id, 'form service')
-  // const isDepertmentExsist = await AcademicDepertment.findOne({name : payload.name})
-  // if(isDepertmentExsist){
-  //   throw new Error('this department already exist')
-  // }
   const result = await AcademicDepertment.findOneAndUpdate(
     { _id: id },
     payload,

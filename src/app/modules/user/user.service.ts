@@ -1,15 +1,14 @@
-import mongoose from "mongoose";
-import config from "../../config";
-import { AcademicSemester } from "../academicSemester/academicSemester.model";
-import { TStudent } from "../student/student.interface";
-import { Student } from "../student/student.model";
-import { TUser } from "./user.interface";
-import { User } from "./user.model";
-import { generateStudentId } from "./user.utils";
-import httpStatus from "http-status";
-import { TAcademicSemseter } from "../academicSemester/academicSemester.interface";
-import AppError from "../../errors/AppError";
-
+import mongoose from 'mongoose';
+import config from '../../config';
+import { AcademicSemester } from '../academicSemester/academicSemester.model';
+import { TStudent } from '../student/student.interface';
+import { Student } from '../student/student.model';
+import { TUser } from './user.interface';
+import { User } from './user.model';
+import { generateStudentId } from './user.utils';
+import httpStatus from 'http-status';
+import { TAcademicSemseter } from '../academicSemester/academicSemester.interface';
+import AppError from '../../errors/AppError';
 
 const createStudentIntoDB = async (password: string, payload: TStudent) => {
   // create a user object
@@ -22,14 +21,13 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
   userData.role = 'student';
 
   // find academic semester info
-  const admissionSemester: TAcademicSemseter |null= await AcademicSemester.findById(
-    payload.admissionSemester,
-  );
+  const admissionSemester: TAcademicSemseter | null =
+    await AcademicSemester.findById(payload.admissionSemester);
 
   if (!admissionSemester) {
-    throw new AppError(400, 'Admission semester not found');
+    throw new AppError(httpStatus.NOT_FOUND, 'Admission semester not found');
   }
-  
+
   const session = await mongoose.startSession();
 
   try {
@@ -60,15 +58,18 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
     await session.endSession();
 
     return newStudent;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     await session.abortTransaction();
     await session.endSession();
     throw new Error(err);
   }
 };
-
-  export const UserServices = {
-    createStudentIntoDB,
-  };
-  
+// const updateStudents = async (id: string, payload: TStudent) => {
+//   const result = await Student.findOneAndUpdate({ id }, payload);
+//   return result;
+// };
+export const UserServices = {
+  createStudentIntoDB,
+  // updateStudents,
+};

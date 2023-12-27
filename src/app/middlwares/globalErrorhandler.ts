@@ -2,10 +2,12 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ErrorRequestHandler } from 'express';
-import httpStatus from 'http-status';
 import { ZodError } from 'zod';
 import { TErrorSouce } from '../interface/error';
 import config from '../config';
+import { zodErrorHandler } from '../errors/handleZodErrors';
+import mongoose from 'mongoose';
+import handleValidationError from '../errors/handlerValidationError';
 
 const golobalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
   //setting default values
@@ -20,31 +22,25 @@ const golobalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
   ];
 
   //zod handler function
-  const zodErrorHandler = (err: ZodError) => {
-    const errorSources : TErrorSouce= err.issues.map((issue) => {
-      return {
-        path: issue?.path[issue?.path.length - 1],
-        message: issue?.message,
-      };
-    });
-    return {
-      statusCode: httpStatus.BAD_REQUEST,
-      message: 'Validation Error',
-      errorSources,
-    };
-  };
-
   if (err instanceof ZodError) {
     const simplifiedError = zodErrorHandler(err);
     statusCode = simplifiedError?.statusCode;
     message = simplifiedError?.message;
     errorSources = simplifiedError?.errorSources;
+  }else if(err instanceof mongoose.Error.ValidationError){
+    const simplifiedMongooseError = handleValidationError(err)
+    statusCode = simplifiedMongooseError.statusCode;
+    message = simplifiedMongooseError.message;
+    errorSources = simplifiedMongooseError.errorSources
   }
+
+
 
   return res.status(statusCode).json({
     success: false,
     message,
     errorSources,
+    error: err,
     stack: config.NODE_ENV === 'development'? err?.stack : null
   });
 };

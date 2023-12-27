@@ -4,17 +4,47 @@ import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
 import { User } from '../user/user.model';
 import { TStudent } from './student.interface';
+import QueryBuilder from '../../builder/QueryBuilder';
 
-const getAllStudentsFromDB = async () => {
-  const result = await Student.find()
-    .populate('admissionSemester')
-    .populate({
-      path: 'academicDepartment',
-      populate: {
-        path: 'academicFaculty',
-      },
-    });
-  return result;
+const getAllStudentsFromDB = async (query: Record<string,unknown>) => {
+  // console.log(query, 'base query')
+  // const queryObj = {...query}
+  // console.log(queryObj, 'deaclear queryObj')
+  //any collection search of format 
+  //{email: {$regex: "qeery.searchTerm", $options: i}}
+const studentSearchableFields = ['email','name.firstName','presentAddress']
+  // let searchTerm = '';
+  // if(query?.searchTerm){
+  //   searchTerm = query?.searchTerm as string
+  // }
+
+  // const searchQuery = Student.find({
+  //   $or: studentSearchableFields.map((field)=>({
+  //     [field]: {$regex: searchTerm, $opitons :'i'}
+  //   }))
+  // })
+
+  // Filtering
+  // const excludeFields = ['searchTerm', 'page']
+  // excludeFields.forEach(el => delete queryObj[el])
+  // console.log(query, queryObj, 'after proccess')
+  const studentQuery = new QueryBuilder(
+    Student.find()
+      .populate('admissionSemester')
+      .populate({
+        path: 'academicDepartment',
+        populate: {
+          path: 'academicFaculty',
+        },
+      }),
+    query,
+  ).search(studentSearchableFields)
+  .filter()
+  .sort()
+  .paginate()
+  .fields();
+    const result = await studentQuery.modelQuery;
+    return result;
 };
 
 const getSingleStudentFromDB = async (id: string) => {

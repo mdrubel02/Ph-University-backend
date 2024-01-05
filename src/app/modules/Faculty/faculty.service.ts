@@ -7,7 +7,10 @@ import httpStatus from "http-status";
 import AppError from "../../errors/AppError";
 import { User } from "../user/user.model";
 
-
+const createFacultiesIntoDB = async (payload: TFaculty) =>{
+    const result = await Faculty.create(payload)
+    return result;
+}
 const getAllFacultiesFromDB = async (query: Record<string, unknown>) => {
     const facultyQuery = new QueryBuilder(
       Faculty.find().populate('academicDepartment'),
@@ -91,6 +94,7 @@ const getAllFacultiesFromDB = async (query: Record<string, unknown>) => {
   };
   
   export const FacultyServices = {
+    createFacultiesIntoDB,
     getAllFacultiesFromDB,
     getSingleFacultyFromDB,
     updateFacultyIntoDB,

@@ -31,9 +31,8 @@ const createCourseIntoDB = async (payload: TCourse) => {
     return {
       meta,
       result,
-    };
+    }
   };
-  
   const getSingleCourseFromDB = async (id: string) => {
     const result = await Course.findById(id).populate('preRequisiteCourses.course', );
     return result;
@@ -41,9 +40,7 @@ const createCourseIntoDB = async (payload: TCourse) => {
   
   const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
     const { preRequisiteCourses, ...courseRemainingData } = payload;
-  
-    const session = await mongoose.startSession();
-  
+  const session = await mongoose.startSession();
     try {
       session.startTransaction();
   
@@ -135,10 +132,7 @@ const createCourseIntoDB = async (payload: TCourse) => {
     return result;
   };
   
-  const assignFacultiesWithCourseIntoDB = async (
-    id: string,
-    payload: Partial<TCoursefaculty>,
-  ) => {
+  const assignFacultiesWithCourseIntoDB = async ( id: string, payload: Partial<TCoursefaculty>,) => {
     const result = await CourseFaculty.findByIdAndUpdate(
       id,
       {
